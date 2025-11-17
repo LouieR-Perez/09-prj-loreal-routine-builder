@@ -186,6 +186,15 @@ body {
   display: flex;
   gap: 15px;
   min-height: 160px;
+
+  cursor: pointer;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.product-card.selected {
+  border: 2px solid #0078d7;
+  box-shadow: 0 0 0 2px #b3d8ff;
+  background: #f0f8ff;
 }
 
 .product-card img {
@@ -193,6 +202,15 @@ body {
   height: 110px;
   object-fit: contain;
   flex-shrink: 0;
+}
+#selectedProductsList .selected-product-item {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 2px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .product-card .product-info {
