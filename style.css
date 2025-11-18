@@ -109,7 +109,7 @@ body {
   padding: 20px;
   font-size: 18px;
   line-height: 1.5;
-  height: 250px;
+  height: 450px;
   overflow-y: auto;
   background: #fff;
   border: 1.5px solid #e3a535;
@@ -141,7 +141,7 @@ body {
   font-size: 18px;
   border: none;
   border-bottom: 2px solid #ccc;
-  background: transparent;
+  background: #fff;
 }
 
 .chat-form input:focus {
