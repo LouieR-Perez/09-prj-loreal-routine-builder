@@ -1,3 +1,47 @@
+/* RTL/LTR support for routine builder */
+body[dir="rtl"],
+.page-wrapper[dir="rtl"],
+.search-section[dir="rtl"],
+.selected-products[dir="rtl"],
+#selectedProductsList[dir="rtl"],
+.chatbox[dir="rtl"],
+.chat-window[dir="rtl"],
+.chat-form[dir="rtl"],
+.product-card[dir="rtl"],
+.product-card .product-info[dir="rtl"],
+.product-card .product-overlay[dir="rtl"] {
+  direction: rtl;
+}
+
+body[dir="rtl"] .search-section,
+body[dir="rtl"] #selectedProductsList,
+body[dir="rtl"] .chat-form,
+body[dir="rtl"] .products-grid,
+body[dir="rtl"] .product-card {
+  flex-direction: row-reverse;
+}
+
+body[dir="rtl"] .product-card .product-info,
+body[dir="rtl"] .product-card .product-overlay,
+body[dir="rtl"] .chatbox h2,
+body[dir="rtl"] .chat-window {
+  text-align: right;
+}
+
+body[dir="ltr"] .search-section,
+body[dir="ltr"] #selectedProductsList,
+body[dir="ltr"] .chat-form,
+body[dir="ltr"] .products-grid,
+body[dir="ltr"] .product-card {
+  flex-direction: row;
+}
+
+body[dir="ltr"] .product-card .product-info,
+body[dir="ltr"] .product-card .product-overlay,
+body[dir="ltr"] .chatbox h2,
+body[dir="ltr"] .chat-window {
+  text-align: left;
+}
 /* —— basic reset —— */
 * {
   box-sizing: border-box;

@@ -107,6 +107,32 @@
 
     <!-- secrets.js can be removed when using Cloudflare Workers for API requests -->
     <script src="secrets.js"></script>
+    <script>
+      // Auto-detect RTL languages and set dir attribute
+      (function () {
+        const rtlLangs = [
+          "ar",
+          "he",
+          "fa",
+          "ur",
+          "ps",
+          "syr",
+          "dv",
+          "ku",
+          "yi",
+        ];
+        const userLang = (
+          navigator.language ||
+          navigator.userLanguage ||
+          ""
+        ).toLowerCase();
+        if (rtlLangs.some((l) => userLang.startsWith(l))) {
+          document.body.setAttribute("dir", "rtl");
+        } else {
+          document.body.setAttribute("dir", "ltr");
+        }
+      })();
+    </script>
     <script src="script.js"></script>
   </body>
 </html>
