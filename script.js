@@ -181,13 +181,6 @@ function updateSelectedProductsList() {
     clearSelectedBtn = document.createElement("button");
     clearSelectedBtn.textContent = "Clear All";
     clearSelectedBtn.className = "clear-selected-btn";
-    clearSelectedBtn.style.marginLeft = "10px";
-    clearSelectedBtn.style.padding = "6px 14px";
-    clearSelectedBtn.style.fontSize = "15px";
-    clearSelectedBtn.style.borderRadius = "6px";
-    clearSelectedBtn.style.border = "1px solid #ccc";
-    clearSelectedBtn.style.background = "#f8f8f8";
-    clearSelectedBtn.style.cursor = "pointer";
     clearSelectedBtn.addEventListener("click", clearAllSelections);
     // Insert after the "Selected Products" heading
     const selectedProductsHeader = document.querySelector(
@@ -214,8 +207,8 @@ function updateSelectedProductsList() {
     .map(
       (product) => `
         <div class="selected-product-item" data-product-id="${product.id}">
-          <img src="${product.image}" alt="${product.name}" title="${product.name}" style="width:48px;height:48px;object-fit:contain;border-radius:4px;">
-          <button class="remove-selected-btn" title="Remove" style="margin-left:4px;padding:2px 7px;font-size:13px;border-radius:4px;border:1px solid #ccc;background:#fff;cursor:pointer;">&times;</button>
+          <img src="${product.image}" alt="${product.name}" title="${product.name}" class="selected-product-img">
+          <button class="remove-selected-btn" title="Remove">&times;</button>
         </div>
       `
     )

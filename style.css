@@ -1,3 +1,50 @@
+/* Style for selected product image in selected products list */
+.selected-product-img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+/* Remove button in selected products list (overrides default) */
+.remove-selected-btn {
+  margin-left: 4px;
+  padding: 2px 7px;
+  font-size: 13px;
+  border-radius: 4px;
+  border: 1.5px solid #ff003b;
+  background: #fff;
+  color: #ff003b;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+.remove-selected-btn:hover {
+  background: #e3a535;
+  color: #000;
+  border-color: #e3a535;
+}
+
+/* Clear selected button (overrides default for inline style removal) */
+.clear-selected-btn {
+  margin-left: 10px;
+  padding: 6px 14px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1.5px solid #ff003b;
+  background: #fff4f7;
+  color: #ff003b;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+.clear-selected-btn:hover {
+  background: #e3a535;
+  color: #000;
+  border-color: #e3a535;
+}
 /* RTL/LTR support for routine builder */
 body[dir="rtl"],
 .page-wrapper[dir="rtl"],
@@ -460,7 +507,7 @@ body {
   font-size: 13px;
   border-radius: 4px;
   border: 1.5px solid #ff003b;
-  background: #000;
+  background: #fff;
   color: #ff003b;
   cursor: pointer;
   font-weight: 500;
