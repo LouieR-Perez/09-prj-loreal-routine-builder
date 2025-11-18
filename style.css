@@ -8,7 +8,8 @@
 /* —— body + fonts —— */
 body {
   font-family: "Montserrat", Arial, Helvetica, sans-serif;
-  color: #333;
+  color: #222;
+  background: #fff8f6;
   display: flex;
   justify-content: center;
 }
@@ -19,6 +20,7 @@ body {
 }
 
 /* header */
+
 .site-header {
   text-align: center;
   padding-top: 50px;
@@ -31,9 +33,11 @@ body {
 }
 
 .site-title {
-  font-size: 22px;
-  font-weight: 500;
+  font-size: 26px;
+  font-weight: 700;
   margin-bottom: 10px;
+  color: #ff003b;
+  letter-spacing: 1px;
 }
 
 /* category filter */
@@ -46,29 +50,36 @@ body {
   width: 100%;
   padding: 16px;
   font-size: 18px;
-  border: 2px solid #000;
+  border: 2px solid #ff003b;
   border-radius: 8px;
   cursor: pointer;
-  background-color: white;
+  background-color: #fff;
   font-weight: 500;
+  color: #ff003b;
+  transition: border 0.2s, color 0.2s;
 }
 
 .search-section select:focus {
   outline: none;
-  border-color: #666;
+  border-color: #e3a535;
+  color: #e3a535;
 }
 
 /* chat section */
+
 .chatbox {
   margin: 40px 0;
-  border: 2px solid #000;
-  border-radius: 8px;
+  border: 2px solid #ff003b;
+  border-radius: 12px;
   padding: 26px;
+  background: #fff4f7;
+  box-shadow: 0 2px 12px 0 #ff003b22;
 }
 
 .chatbox h2 {
-  font-size: 20px;
+  font-size: 22px;
   margin-bottom: 20px;
+  color: #ff003b;
 }
 
 .chat-window {
@@ -77,16 +88,19 @@ body {
   line-height: 1.5;
   height: 250px;
   overflow-y: auto;
-  background: #fafafa;
+  background: #fff;
+  border: 1.5px solid #e3a535;
+  border-radius: 8px;
   margin-bottom: 20px;
 }
 
 /* placeholder message */
+
 .placeholder-message {
   width: 100%;
   text-align: center;
   padding: 40px;
-  color: #666;
+  color: #e3a535;
   font-size: 18px;
 }
 
@@ -113,7 +127,7 @@ body {
 
 .chat-form button {
   font-size: 18px;
-  background: #000;
+  background: #ff003b;
   color: #fff;
   border: none;
   padding: 12px;
@@ -123,15 +137,18 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.3s;
+  border-radius: 8px;
+  transition: background 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 8px 0 #ff003b22;
 }
 
 .chat-form button:hover {
-  background: #666666;
+  background: #e3a535;
+  color: #fff;
 }
 
 .chat-form button:focus {
-  outline: 2px solid #000;
+  outline: 2px solid #e3a535;
   outline-offset: 2px;
 }
 
@@ -149,11 +166,12 @@ body {
 }
 
 /* footer */
+
 .site-footer {
   margin: 60px 0 40px;
   text-align: center;
   font-size: 14px;
-  color: #666;
+  color: #e3a535;
 }
 
 .site-footer nav {
@@ -162,15 +180,18 @@ body {
 
 .site-footer a {
   margin: 0 8px;
-  color: #000;
+  color: #ff003b;
   text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
 }
 
 .site-footer a:hover {
-  color: #666666;
+  color: #e3a535;
 }
 
 /* products grid */
+
 .products-grid {
   display: flex;
   flex-wrap: wrap;
@@ -180,21 +201,22 @@ body {
 
 .product-card {
   flex: 0 1 calc(33.333% - 14px);
-  border: 1px solid #ccc;
+  border: 2px solid #e3a535;
   padding: 15px;
-  border-radius: 4px;
+  border-radius: 10px;
   display: flex;
   gap: 15px;
   min-height: 160px;
-
+  background: #fff;
   cursor: pointer;
-  transition: border 0.2s, box-shadow 0.2s;
+  transition: border 0.2s, box-shadow 0.2s, background 0.2s;
+  box-shadow: 0 2px 8px 0 #e3a53522;
 }
 
 .product-card.selected {
-  border: 2px solid #0078d7;
-  box-shadow: 0 0 0 2px #b3d8ff;
-  background: #f0f8ff;
+  border: 2.5px solid #ff003b;
+  box-shadow: 0 0 0 3px #ff003b33;
+  background: #fff4f7;
 }
 
 .product-card img {
@@ -203,14 +225,16 @@ body {
   object-fit: contain;
   flex-shrink: 0;
 }
+
 #selectedProductsList .selected-product-item {
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1.5px solid #e3a535;
+  border-radius: 6px;
   padding: 2px;
   background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 1px 4px 0 #e3a53522;
 }
 
 .product-card .product-info {
@@ -232,16 +256,20 @@ body {
 }
 
 /* selected products */
+
 .selected-products {
   margin: 40px 0;
   padding: 20px;
-  border: 2px solid #000;
-  border-radius: 8px;
+  border: 2px solid #e3a535;
+  border-radius: 12px;
+  background: #fffef8;
+  box-shadow: 0 2px 12px 0 #e3a53522;
 }
 
 .selected-products h2 {
-  font-size: 20px;
+  font-size: 22px;
   margin-bottom: 20px;
+  color: #e3a535;
 }
 
 #selectedProductsList {
@@ -255,17 +283,20 @@ body {
   margin-top: 20px;
   padding: 16px;
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 700;
   color: #fff;
-  background: #000;
+  background: linear-gradient(90deg, #ff003b 60%, #e3a535 100%);
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: background 0.3s;
+  box-shadow: 0 2px 8px 0 #ff003b22;
+  transition: background 0.3s, box-shadow 0.3s;
 }
 
 .generate-btn:hover {
-  background: #666;
+  background: linear-gradient(90deg, #e3a535 60%, #ff003b 100%);
+  color: #fff;
+  box-shadow: 0 4px 16px 0 #e3a53533;
 }
 
 .generate-btn i {
@@ -273,20 +304,24 @@ body {
 }
 
 /* clear and remove buttons */
+
 .clear-selected-btn {
   margin-left: 10px;
   padding: 6px 14px;
   font-size: 15px;
   border-radius: 6px;
-  border: 1px solid #ccc;
-  background: #f8f8f8;
+  border: 1.5px solid #ff003b;
+  background: #fff4f7;
+  color: #ff003b;
   cursor: pointer;
-  transition: background 0.2s;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s, border 0.2s;
 }
 
 .clear-selected-btn:hover {
-  background: #ffeaea;
-  border-color: #ffaaaa;
+  background: #e3a535;
+  color: #fff;
+  border-color: #e3a535;
 }
 
 .selected-product-item {
@@ -300,13 +335,16 @@ body {
   padding: 2px 7px;
   font-size: 13px;
   border-radius: 4px;
-  border: 1px solid #ccc;
-  background: #fff;
+  border: 1.5px solid #ff003b;
+  background: #fff4f7;
+  color: #ff003b;
   cursor: pointer;
-  transition: background 0.2s;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s, border 0.2s;
 }
 
 .remove-selected-btn:hover {
-  background: #ffeaea;
-  border-color: #ffaaaa;
+  background: #e3a535;
+  color: #fff;
+  border-color: #e3a535;
 }
