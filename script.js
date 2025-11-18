@@ -106,6 +106,7 @@ function displayProducts(products) {
         <h3>${product.name}</h3>
         <p>${product.brand}</p>
       </div>
+      <div class="product-overlay">${product.description}</div>
     </div>
   `
     )
