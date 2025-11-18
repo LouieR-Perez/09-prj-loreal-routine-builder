@@ -5,6 +5,9 @@ const chatForm = document.getElementById("chatForm");
 const chatWindow = document.getElementById("chatWindow");
 const generateRoutineBtn = document.getElementById("generateRoutine");
 
+// --- NEW: Reference for clear button ---
+let clearSelectedBtn = null;
+
 // Store the chat history as an array of messages
 let chatHistory = [
   {
@@ -15,7 +18,18 @@ let chatHistory = [
 ];
 
 // --- Product selection and display logic ---
+
+// --- Load selected products from localStorage, or empty array ---
 let selectedProductIds = [];
+try {
+  const saved = localStorage.getItem("selectedProductIds");
+  if (saved) {
+    selectedProductIds = JSON.parse(saved);
+  }
+} catch (e) {
+  selectedProductIds = [];
+}
+
 let allProducts = [];
 
 // Load product data from JSON file
@@ -60,7 +74,32 @@ function toggleProductSelection(productId) {
   } else {
     selectedProductIds.splice(index, 1);
   }
+  // --- Save to localStorage ---
+  localStorage.setItem("selectedProductIds", JSON.stringify(selectedProductIds));
   // Re-render products to update visual state
+  displayProducts(
+    allProducts.filter((p) => p.category === categoryFilter.value)
+  );
+  updateSelectedProductsList();
+}
+
+// --- NEW: Remove a single product from selection ---
+function removeProductSelection(productId) {
+  const index = selectedProductIds.indexOf(productId);
+  if (index !== -1) {
+    selectedProductIds.splice(index, 1);
+    localStorage.setItem("selectedProductIds", JSON.stringify(selectedProductIds));
+    displayProducts(
+      allProducts.filter((p) => p.category === categoryFilter.value)
+    );
+    updateSelectedProductsList();
+  }
+}
+
+// --- NEW: Clear all selected products ---
+function clearAllSelections() {
+  selectedProductIds = [];
+  localStorage.setItem("selectedProductIds", JSON.stringify(selectedProductIds));
   displayProducts(
     allProducts.filter((p) => p.category === categoryFilter.value)
   );
@@ -73,20 +112,53 @@ function updateSelectedProductsList() {
   const selectedProducts = allProducts.filter((p) =>
     selectedProductIds.includes(p.id)
   );
+  // --- Add "Clear All" button if any selected ---
+  if (!clearSelectedBtn) {
+    clearSelectedBtn = document.createElement("button");
+    clearSelectedBtn.textContent = "Clear All";
+    clearSelectedBtn.className = "clear-selected-btn";
+    clearSelectedBtn.style.marginLeft = "10px";
+    clearSelectedBtn.style.padding = "6px 14px";
+    clearSelectedBtn.style.fontSize = "15px";
+    clearSelectedBtn.style.borderRadius = "6px";
+    clearSelectedBtn.style.border = "1px solid #ccc";
+    clearSelectedBtn.style.background = "#f8f8f8";
+    clearSelectedBtn.style.cursor = "pointer";
+    clearSelectedBtn.addEventListener("click", clearAllSelections);
+    // Insert after the "Selected Products" heading
+    const selectedProductsHeader = document.querySelector(".selected-products h2");
+    if (selectedProductsHeader && !selectedProductsHeader.parentNode.querySelector(".clear-selected-btn")) {
+      selectedProductsHeader.parentNode.insertBefore(clearSelectedBtn, selectedProductsHeader.nextSibling);
+    }
+  }
   if (selectedProducts.length === 0) {
     selectedProductsList.innerHTML =
       '<div class="placeholder-message">No products selected</div>';
+    if (clearSelectedBtn) clearSelectedBtn.style.display = "none";
     return;
   }
+  if (clearSelectedBtn) clearSelectedBtn.style.display = "inline-block";
   selectedProductsList.innerHTML = selectedProducts
     .map(
       (product) => `
-        <div class="selected-product-item">
+        <div class="selected-product-item" data-product-id="${product.id}">
           <img src="${product.image}" alt="${product.name}" title="${product.name}" style="width:48px;height:48px;object-fit:contain;border-radius:4px;">
+          <button class="remove-selected-btn" title="Remove" style="margin-left:4px;padding:2px 7px;font-size:13px;border-radius:4px;border:1px solid #ccc;background:#fff;cursor:pointer;">&times;</button>
         </div>
       `
     )
     .join("");
+  // --- Add event listeners for remove buttons ---
+  document.querySelectorAll(".remove-selected-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const parent = btn.closest(".selected-product-item");
+      if (parent) {
+        const productId = parseInt(parent.getAttribute("data-product-id"));
+        removeProductSelection(productId);
+      }
+    });
+  });
 }
 
 // Filter and display products when category changes
@@ -119,6 +191,7 @@ async function generateRoutineWithOpenAI() {
   renderChatWindow();
   chatWindow.innerHTML += `<div class='placeholder-message'>Generating your personalized routine...</div>`;
   try {
+    // Send request to OpenAI API
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -128,82 +201,23 @@ async function generateRoutineWithOpenAI() {
       body: JSON.stringify({
         model: "gpt-4o",
         messages: chatHistory,
-        max_tokens: 400,
       }),
     });
+    // Parse the response from OpenAI
     const data = await response.json();
+    // Check if response contains the expected message
     if (
       data.choices &&
       data.choices[0] &&
       data.choices[0].message &&
       data.choices[0].message.content
     ) {
+      // Add assistant's response to chat history
       chatHistory.push({
         role: "assistant",
         content: data.choices[0].message.content,
       });
-      renderChatWindow();
-    } else {
-      chatWindow.innerHTML += `<div class='placeholder-message'>Sorry, I couldn't generate a routine. Please try again.</div>`;
-    }
-  } catch (error) {
-    chatWindow.innerHTML += `<div class='placeholder-message'>Error: ${error.message}</div>`;
-  }
-}
-
-// Render chat window from chatHistory
-function renderChatWindow() {
-  chatWindow.innerHTML = chatHistory
-    .filter((msg) => msg.role !== "system")
-    .map((msg) => {
-      if (msg.role === "user") {
-        return `<div class='user-message'><b>You:</b> ${msg.content.replace(
-          /\n/g,
-          "<br>"
-        )}</div>`;
-      } else {
-        return `<div class='ai-response'><b>Advisor:</b> ${msg.content.replace(
-          /\n/g,
-          "<br>"
-        )}</div>`;
-      }
-    })
-    .join("");
-}
-
-// Handle follow-up questions and keep chat history
-chatForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const userInput = document.getElementById("userInput").value.trim();
-  if (!userInput) return;
-  chatHistory.push({ role: "user", content: userInput });
-  renderChatWindow();
-  document.getElementById("userInput").value = "";
-  chatWindow.innerHTML += `<div class='placeholder-message'>Thinking...</div>`;
-  try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${openai_api_key}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        messages: chatHistory,
-        max_tokens: 400,
-      }),
-    });
-    const data = await response.json();
-    if (
-      data.choices &&
-      data.choices[0] &&
-      data.choices[0].message &&
-      data.choices[0].message.content
-    ) {
-      chatHistory.push({
-        role: "assistant",
-        content: data.choices[0].message.content,
-      });
+      // Display the updated chat
       renderChatWindow();
     } else {
       chatWindow.innerHTML += `<div class='placeholder-message'>Sorry, I couldn't get a response. Please try again.</div>`;
@@ -211,7 +225,7 @@ chatForm.addEventListener("submit", async (e) => {
   } catch (error) {
     chatWindow.innerHTML += `<div class='placeholder-message'>Error: ${error.message}</div>`;
   }
-});
+}
 
 // Generate routine button event
 generateRoutineBtn.addEventListener("click", generateRoutineWithOpenAI);
