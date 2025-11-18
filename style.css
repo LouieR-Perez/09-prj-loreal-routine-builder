@@ -295,6 +295,21 @@ body {
   font-size: 22px;
   margin-bottom: 20px;
   color: #e3a535;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.clear-selected-btn {
+  margin-left: 18px;
+  margin-bottom: 20px;
+  vertical-align: middle;
+}
+
+#selectedProductsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
 }
 
 #selectedProductsList {
@@ -345,7 +360,7 @@ body {
 
 .clear-selected-btn:hover {
   background: #e3a535;
-  color: #fff;
+  color: #000;
   border-color: #e3a535;
 }
 
@@ -361,7 +376,7 @@ body {
   font-size: 13px;
   border-radius: 4px;
   border: 1.5px solid #ff003b;
-  background: #fff4f7;
+  background: #000;
   color: #ff003b;
   cursor: pointer;
   font-weight: 500;
@@ -370,6 +385,6 @@ body {
 
 .remove-selected-btn:hover {
   background: #e3a535;
-  color: #fff;
+  color: #000;
   border-color: #e3a535;
 }
