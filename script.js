@@ -1,6 +1,7 @@
 // (No-op: chatForm event listener is now only registered inside DOMContentLoaded to prevent double submission)
 /* Get references to DOM elements */
 const categoryFilter = document.getElementById("categoryFilter");
+const productSearch = document.getElementById("productSearch");
 const productsContainer = document.getElementById("productsContainer");
 const chatWindow = document.getElementById("chatWindow");
 const generateRoutineBtn = document.getElementById("generateRoutine");
@@ -231,16 +232,36 @@ function updateSelectedProductsList() {
   });
 }
 
+// Helper: filter products by category and search
+function getFilteredProducts() {
+  const selectedCategory = categoryFilter.value;
+  const searchTerm = productSearch.value.trim().toLowerCase();
+  return allProducts.filter((product) => {
+    const matchesCategory = selectedCategory
+      ? product.category === selectedCategory
+      : true;
+    const matchesSearch = searchTerm
+      ? product.name.toLowerCase().includes(searchTerm) ||
+        product.brand.toLowerCase().includes(searchTerm) ||
+        (product.description &&
+          product.description.toLowerCase().includes(searchTerm))
+      : true;
+    return matchesCategory && matchesSearch;
+  });
+}
+
 // Filter and display products when category changes
 categoryFilter.addEventListener("change", async (e) => {
   if (allProducts.length === 0) {
     allProducts = await loadProducts();
   }
-  const selectedCategory = e.target.value;
-  const filteredProducts = allProducts.filter(
-    (product) => product.category === selectedCategory
-  );
-  displayProducts(filteredProducts);
+  displayProducts(getFilteredProducts());
+  updateSelectedProductsList();
+});
+
+// Filter and display products when search changes
+productSearch.addEventListener("input", () => {
+  displayProducts(getFilteredProducts());
   updateSelectedProductsList();
 });
 
