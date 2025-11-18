@@ -1,9 +1,62 @@
+// (No-op: chatForm event listener is now only registered inside DOMContentLoaded to prevent double submission)
 /* Get references to DOM elements */
 const categoryFilter = document.getElementById("categoryFilter");
 const productsContainer = document.getElementById("productsContainer");
-const chatForm = document.getElementById("chatForm");
 const chatWindow = document.getElementById("chatWindow");
 const generateRoutineBtn = document.getElementById("generateRoutine");
+
+// Wait for DOM to be fully loaded before accessing chatForm
+document.addEventListener("DOMContentLoaded", function () {
+  const chatForm = document.getElementById("chatForm");
+  if (chatForm) {
+    chatForm.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const input = document.getElementById("userInput");
+      const message = input.value.trim();
+      if (!message) return;
+      chatHistory.push({ role: "user", content: message });
+      renderChatWindow();
+      chatWindow.innerHTML += `<div class='placeholder-message'>Generating your personalized routine...</div>`;
+      chatWindow.scrollTop = chatWindow.scrollHeight;
+      try {
+        const response = await fetch(
+          "https://loreal-chatbot.lreyperez18.workers.dev/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: "gpt-4o",
+              messages: chatHistory,
+            }),
+          }
+        );
+        const data = await response.json();
+        if (
+          data.choices &&
+          data.choices[0] &&
+          data.choices[0].message &&
+          data.choices[0].message.content
+        ) {
+          chatHistory.push({
+            role: "assistant",
+            content: data.choices[0].message.content,
+          });
+          renderChatWindow();
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+        } else {
+          chatWindow.innerHTML += `<div class='placeholder-message'>Sorry, I couldn't get a response. Please try again.</div>`;
+          chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+      } catch (error) {
+        chatWindow.innerHTML += `<div class='placeholder-message'>Error: ${error.message}</div>`;
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      }
+      input.value = "";
+    });
+  }
+});
 
 // --- NEW: Reference for clear button ---
 let clearSelectedBtn = null;
@@ -75,7 +128,10 @@ function toggleProductSelection(productId) {
     selectedProductIds.splice(index, 1);
   }
   // --- Save to localStorage ---
-  localStorage.setItem("selectedProductIds", JSON.stringify(selectedProductIds));
+  localStorage.setItem(
+    "selectedProductIds",
+    JSON.stringify(selectedProductIds)
+  );
   // Re-render products to update visual state
   displayProducts(
     allProducts.filter((p) => p.category === categoryFilter.value)
@@ -88,7 +144,10 @@ function removeProductSelection(productId) {
   const index = selectedProductIds.indexOf(productId);
   if (index !== -1) {
     selectedProductIds.splice(index, 1);
-    localStorage.setItem("selectedProductIds", JSON.stringify(selectedProductIds));
+    localStorage.setItem(
+      "selectedProductIds",
+      JSON.stringify(selectedProductIds)
+    );
     displayProducts(
       allProducts.filter((p) => p.category === categoryFilter.value)
     );
@@ -99,7 +158,10 @@ function removeProductSelection(productId) {
 // --- NEW: Clear all selected products ---
 function clearAllSelections() {
   selectedProductIds = [];
-  localStorage.setItem("selectedProductIds", JSON.stringify(selectedProductIds));
+  localStorage.setItem(
+    "selectedProductIds",
+    JSON.stringify(selectedProductIds)
+  );
   displayProducts(
     allProducts.filter((p) => p.category === categoryFilter.value)
   );
@@ -126,9 +188,17 @@ function updateSelectedProductsList() {
     clearSelectedBtn.style.cursor = "pointer";
     clearSelectedBtn.addEventListener("click", clearAllSelections);
     // Insert after the "Selected Products" heading
-    const selectedProductsHeader = document.querySelector(".selected-products h2");
-    if (selectedProductsHeader && !selectedProductsHeader.parentNode.querySelector(".clear-selected-btn")) {
-      selectedProductsHeader.parentNode.insertBefore(clearSelectedBtn, selectedProductsHeader.nextSibling);
+    const selectedProductsHeader = document.querySelector(
+      ".selected-products h2"
+    );
+    if (
+      selectedProductsHeader &&
+      !selectedProductsHeader.parentNode.querySelector(".clear-selected-btn")
+    ) {
+      selectedProductsHeader.parentNode.insertBefore(
+        clearSelectedBtn,
+        selectedProductsHeader.nextSibling
+      );
     }
   }
   if (selectedProducts.length === 0) {
@@ -190,22 +260,22 @@ async function generateRoutineWithOpenAI() {
   chatHistory.push({ role: "user", content: userMsg });
   renderChatWindow();
   chatWindow.innerHTML += `<div class='placeholder-message'>Generating your personalized routine...</div>`;
+  chatWindow.scrollTop = chatWindow.scrollHeight;
   try {
-    // Send request to OpenAI API
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${openai_api_key}`,
-      },
-      body: JSON.stringify({
-        model: "gpt-4o",
-        messages: chatHistory,
-      }),
-    });
-    // Parse the response from OpenAI
+    const response = await fetch(
+      "https://loreal-chatbot.lreyperez18.workers.dev/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: "gpt-4o",
+          messages: chatHistory,
+        }),
+      }
+    );
     const data = await response.json();
-    // Check if response contains the expected message
     if (
       data.choices &&
       data.choices[0] &&
@@ -217,18 +287,42 @@ async function generateRoutineWithOpenAI() {
         role: "assistant",
         content: data.choices[0].message.content,
       });
-      // Display the updated chat
       renderChatWindow();
+      chatWindow.scrollTop = chatWindow.scrollHeight;
     } else {
       chatWindow.innerHTML += `<div class='placeholder-message'>Sorry, I couldn't get a response. Please try again.</div>`;
+      chatWindow.scrollTop = chatWindow.scrollHeight;
     }
   } catch (error) {
     chatWindow.innerHTML += `<div class='placeholder-message'>Error: ${error.message}</div>`;
+    chatWindow.scrollTop = chatWindow.scrollHeight;
   }
 }
 
 // Generate routine button event
-generateRoutineBtn.addEventListener("click", generateRoutineWithOpenAI);
+generateRoutineBtn.addEventListener("click", () => {
+  generateRoutineWithOpenAI();
+});
 
 // Initial selected products list state
 updateSelectedProductsList();
+
+// Render chat window with chat history
+function renderChatWindow() {
+  chatWindow.innerHTML = chatHistory
+    .filter((msg) => msg.role !== "system")
+    .map((msg) => {
+      if (msg.role === "user") {
+        return `<div style="text-align:right;margin-bottom:12px;"><span style="background:#e3a535;color:#fff;padding:10px 16px;border-radius:16px 16px 2px 16px;display:inline-block;max-width:80%;word-break:break-word;">${msg.content.replace(
+          /\n/g,
+          "<br>"
+        )}</span></div>`;
+      } else {
+        return `<div style="text-align:left;margin-bottom:12px;"><span style="background:#ff003b;color:#fff;padding:10px 16px;border-radius:16px 16px 16px 2px;display:inline-block;max-width:80%;word-break:break-word;">${msg.content.replace(
+          /\n/g,
+          "<br>"
+        )}</span></div>`;
+      }
+    })
+    .join("");
+}
